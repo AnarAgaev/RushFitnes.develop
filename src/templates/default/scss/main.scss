@@ -1,3 +1,7 @@
-// Include style components
+// Including style components here
 @import "variables";
 @import "default";
+
+// Including custom components here
+@import "../../../pages/index/list/list";
+@import "../../../pages/index/item/item";

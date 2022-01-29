@@ -1,0 +1,69 @@
+@import "../../../../src/templates/default/scss/variables";
+
+.item {
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        background: $color-back-primary;
+        border-radius: 15px;
+        padding: 15px;
+    }
+
+    &__form {
+        height: 100%;
+        padding: 15px 0 15px 15px;
+        background: $color-back-controllers;
+        border-radius: 15px;
+        border: 1px solid #dbdbdb;
+        box-shadow: inset 0 0 5px 0 rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    &__description {
+        &::-webkit-scrollbar {
+            width: 20px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background-color: $color-back-controllers;
+            border-radius: 20px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: $color-back-secondary;
+            border-radius: 10px;
+            border: 7px solid $color-back-controllers;
+            box-shadow: none;
+        }
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        flex: 1 0 auto;
+        margin-top: 20px;
+        height: auto;
+
+        button {
+            max-width: 150px;
+        }
+    }
+
+    &__datetime {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        font-size: 19px;
+        color: $color-font-secondary;
+
+        img {
+            width: 19px;
+            height: auto;
+            margin-right: 8px;
+        }
+    }
+}

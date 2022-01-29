@@ -1,0 +1,18 @@
+section.container
+    .item__content
+        form.item__form(action="" method="GET")
+            textarea.item__description(placeholder="Текст заметки")
+
+        .item__footer
+            p.item__datetime
+                img(src="img/ic_calendar.svg" alt="" title="")
+                | 26.01.2022 в 12:34
+            button.btn.btn_lite(
+                type="button"
+                data-current-item-id="") Закрыть
+
+    .buttons-list
+        p.button-wrapper
+            button.btn.btn_lite(type="button") Сохранить заметку
+        p.button-wrapper
+            button.btn.btn_dark(type="button") Удалить заметку

@@ -35,13 +35,10 @@ body {
     overflow-x: hidden;
     overflow-y: auto;
     font-family: 'Roboto', sans-serif;
-    font-weight: normal;
+    font-weight: 400;
     font-style: normal;
     color: $color-font-primary;
-
-    &.modal-open {
-        overflow: hidden;
-    }
+    background-color: $color-back-secondary;
 }
 
 #header,
@@ -50,9 +47,24 @@ body {
 }
 
 #main {
+    display: flex;
+    justify-content: space-between;
     flex: 1 0 auto;
     overflow: hidden;
-    height: auto;
+    height: 100%;
+    padding: 10px;
+    width: 100%;
+    max-width: 1270px;
+    margin: 0 auto;
+}
+
+.hide {
+    opacity: 0 !important;
+    max-height: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
 }
 
 .hidden {
@@ -116,211 +128,132 @@ button {
     }
 }
 
-//.btn {
-//    display: flex;
-//    align-items: center;
-//    justify-content: center;
-//    position: relative;
-//    width: 100%;
-//    color: $color-font-secondary;
-//    outline: 0;
-//    overflow: hidden;
-//    text-overflow: ellipsis;
-//    white-space: nowrap;
-//    height: 50px;
-//    background: linear-gradient(180deg, #67D854 0%, $color-accent-primary 100%);
-//    border: 1px solid #4FB33E;
-//    box-sizing: border-box;
-//    box-shadow: 0 3px 0 #1A7E09, 0 15px 10px -10px rgba(69, 172, 52, 0.8);
-//    border-radius: 10px;
-//    transition: opacity .3s linear;
-//    font-weight: bold;
-//    font-size: 16px;
-//    line-height: 22px;
-//    text-align: center;
-//    text-transform: uppercase;
-//    text-decoration: none;
-//    padding-top: 2px;
-//
-//    &:disabled {
-//        cursor: not-allowed;
-//        opacity: 0.6;
-//    }
-//
-//    &_back {
-//        position: relative;
-//        width: 100%;
-//        max-width: 290px;
-//        height: 40px;
-//        background: linear-gradient(180deg, #E0E0E0 0%, #C1C1C1 100%);
-//        border: 1px solid #d0d0d0;
-//        box-sizing: border-box;
-//        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25), 0 11px 14px -10px rgba(0, 0, 0, 0.15);
-//        border-radius: 10px;
-//        margin: 0 auto 10px;
-//        font-weight: bold;
-//        font-size: 16px;
-//        line-height: 22px;
-//        color: #818181;
-//        text-transform: uppercase;
-//        text-align: center;
-//        padding: 0;
-//
-//        span {
-//            display: inline-block;
-//            margin-left: 10px;
-//        }
-//    }
-//}
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    width: calc(50% - 20px);
+    height: 100%;
+}
 
-//.form {
-//    width: 100%;
-//
-//    &__group {
-//        display: block;
-//        margin-bottom: 15px;
-//    }
-//}
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    height: 40px;
+    max-height: 40px;
+    color: $color-font-accent;
+    outline: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border-radius: 15px;
+    font-size: 16px;
+    text-decoration: none;
+    padding-top: 2px;
+    transition: all .1s linear;
 
-//input, .input {
-//    display: flex;
-//    align-items: center;
-//    justify-content: center;
-//    width: 100%;
-//    text-align: center;
-//    color: $color-font-primary;
-//    outline: 0;
-//    overflow: hidden;
-//    text-overflow: ellipsis;
-//    white-space: nowrap;
-//    height: 50px;
-//    box-sizing: border-box;
-//    padding: 0 1rem;
-//    font-style: normal;
-//    font-weight: bold;
-//    font-size: 16px;
-//    line-height: 22px;
-//    cursor: pointer;
-//    background: $color-back-primary;
-//    border: 1px solid $color-accent-primary;
-//    border-radius: 10px;
-//
-//    &::-webkit-input-placeholder {
-//        color: #bbbbbb;
-//        opacity: 1;
-//        transition: opacity 0.2s ease;
-//    }
-//
-//    &::-moz-placeholder {
-//        color: #bbbbbb;
-//        opacity: 1;
-//        transition: opacity 0.2s ease;
-//    }
-//
-//    &:-moz-placeholder {
-//        color: #bbbbbb;
-//        opacity: 1;
-//        transition: opacity 0.2s ease;
-//    }
-//
-//    &:-ms-input-placeholder {
-//        color: #bbbbbb;
-//        opacity: 1;
-//        transition: opacity 0.2s ease;
-//    }
-//
-//    &:focus::-webkit-input-placeholder {
-//        color: #bbbbbb;
-//        opacity: 0;
-//        transition: opacity 0.2s ease;
-//    }
-//
-//    &:focus::-moz-placeholder {
-//        color: #bbbbbb;
-//        opacity: 0;
-//        transition: opacity 0.2s ease;
-//    }
-//
-//    &:focus:-moz-placeholder {
-//        color: #bbbbbb;
-//        opacity: 0;
-//        transition: opacity 0.2s ease;
-//    }
-//
-//    &:focus:-ms-input-placeholder {
-//        color: #bbbbbb;
-//        opacity: 0;
-//        transition: opacity 0.2s ease;
-//    }
-//}
+    &_lite {
+        background-color: $color-accent-primary;
+    }
 
-//.slider {
-//    position: relative;
-//    width: 100%;
-//    height: auto;
-//    padding-top: 10px;
-//    margin-top: 50px;
-//
-//    mark {
-//        display: flex;
-//        align-items: center;
-//        position: absolute;
-//        top: 0;
-//        left: 0;
-//        background-color: transparent !important;
-//        transform: translateY(-100%);
-//
-//        p {
-//            display: inline-block;
-//            font-weight: 600;
-//            font-size: 10px;
-//            line-height: 12px;
-//            text-align: center;
-//            text-transform: uppercase;
-//            margin-right: 7px;
-//            color: $color-font-primary;
-//
-//            @media (min-width: $md) {
-//                font-size: 14px;
-//                line-height: 17px;
-//            }
-//        }
-//
-//        span {
-//            width: 13px;
-//            height: 14px;
-//            display: flex;
-//            align-items: center;
-//            top: -1px;
-//            position: relative;
-//
-//            @media (min-width: $md) {
-//                width: 20px;
-//                height: auto;
-//            }
-//
-//            svg {
-//                width: 100%;
-//                height: auto;
-//            }
-//        }
-//    }
-//
-//    .swiper {
-//        width: 100%;
-//        height: auto;
-//    }
-//
-//    .swiper-slide {
-//        position: relative;
-//        width: 100%;
-//        height: auto;
-//        top: 0;
-//        left: 0;
-//    }
-//
-//    .swiper-pagination-bullet-active {
-//        background: $color-font-primary;
-//        opacity: 0.7;
-//    }
-//}
+    &_dark {
+        background-color: $color-accent-secondary;
+    }
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+}
+
+.buttons-list {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+    flex: 1 0 auto;
+
+    &_note-list {
+        margin-top: 40px;
+    }
+}
+
+.button-wrapper {
+    width: calc(50% - 10px);
+}
+
+.form {
+    width: 100%;
+}
+
+textarea {
+    display: block;
+    width: 100%;
+    height: 100%;
+    resize: none;
+    text-align: left;
+    color: $color-font-secondary;
+    background-color: transparent;
+    border: none;
+    outline: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.5;
+    font-family: 'Roboto', sans-serif;
+    padding-right: 10px;
+
+    &::-webkit-input-placeholder {
+        color: #bbbbbb;
+        opacity: 1;
+        transition: opacity 0.2s ease;
+    }
+
+    &::-moz-placeholder {
+        color: #bbbbbb;
+        opacity: 1;
+        transition: opacity 0.2s ease;
+    }
+
+    &:-moz-placeholder {
+        color: #bbbbbb;
+        opacity: 1;
+        transition: opacity 0.2s ease;
+    }
+
+    &:-ms-input-placeholder {
+        color: #bbbbbb;
+        opacity: 1;
+        transition: opacity 0.2s ease;
+    }
+
+    &:focus::-webkit-input-placeholder {
+        color: #bbbbbb;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    &:focus::-moz-placeholder {
+        color: #bbbbbb;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    &:focus:-moz-placeholder {
+        color: #bbbbbb;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    &:focus:-ms-input-placeholder {
+        color: #bbbbbb;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+}

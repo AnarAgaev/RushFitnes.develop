@@ -1,0 +1,97 @@
+@import "../../../../src/templates/default/scss/variables";
+
+.list {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 100%;
+
+    &::-webkit-scrollbar {
+        width: 20px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: $color-back-secondary;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $color-back-hover;
+        border-radius: 10px;
+        border: 7px solid $color-back-secondary;
+        box-shadow: none;
+    }
+
+    &__item {
+        position: relative;
+        width: 100%;
+        height: auto;
+        max-height: 150px;
+        background-color: $color-back-primary;
+        padding: 14px 20px 15px 15px;
+        margin-bottom: 10px;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: all .3s ease-out;
+        box-shadow: inset 0 0 0 0 transparent;
+
+        &:hover {
+            background-color: $color-back-hover;
+        }
+
+        &_selected {
+            box-shadow: inset 0 0 0 2px $color-accent-primary;
+        }
+    }
+
+    &__caption {
+        position: relative;
+        width: 100%;
+        height: auto;
+        color: $color-accent-secondary;
+        font-weight: 400;
+        font-size: 30px;
+        letter-spacing: -0.6px;
+        margin-bottom: 14px;
+        line-height: 1.2;
+        padding-right: 30px;
+    }
+
+    &__delete {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        top: -3px;
+        right: -10px;
+        z-index: 1;
+        border-radius: 7px;
+        background-color: transparent;
+        transition: background-color .2s linear;
+
+        &:hover {
+            background-color: $color-back-primary;
+        }
+
+        img {
+            width: 20px;
+            height: auto;
+        }
+    }
+
+    &__datetime {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        font-size: 19px;
+        color: $color-font-secondary;
+
+        img {
+            width: 19px;
+            height: auto;
+            margin-right: 8px;
+        }
+    }
+}
