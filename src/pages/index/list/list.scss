@@ -1,8 +1,7 @@
 @import "../../../../src/templates/default/scss/variables";
 
 .list {
-    display: flex;
-    flex-direction: column;
+    display: block;
     overflow-x: hidden;
     overflow-y: auto;
     height: 100%;
@@ -26,7 +25,7 @@
         position: relative;
         width: 100%;
         height: auto;
-        max-height: 150px;
+        max-height: 300px;
         background-color: $color-back-primary;
         padding: 14px 20px 15px 15px;
         margin-bottom: 10px;
@@ -34,6 +33,22 @@
         cursor: pointer;
         transition: all .3s ease-out;
         box-shadow: inset 0 0 0 0 transparent;
+        overflow: hidden;
+        opacity: 1;
+        transform: translateY(0);
+
+        &.hide {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        &.collapsed {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
 
         &:hover {
             background-color: $color-back-hover;
@@ -50,11 +65,23 @@
         height: auto;
         color: $color-accent-secondary;
         font-weight: 400;
-        font-size: 30px;
+        font-size: 20px;
         letter-spacing: -0.6px;
         margin-bottom: 14px;
         line-height: 1.2;
         padding-right: 30px;
+
+        @media (min-width: $md) {
+            font-size: 24px;
+        }
+
+        @media (min-width: $lg) {
+            font-size: 26px;
+        }
+
+        @media (min-width: $xl) {
+            font-size: 30px;
+        }
     }
 
     &__delete {

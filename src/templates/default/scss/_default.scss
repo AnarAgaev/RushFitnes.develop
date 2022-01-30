@@ -58,15 +58,6 @@ body {
     margin: 0 auto;
 }
 
-.hide {
-    opacity: 0 !important;
-    max-height: 0 !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-}
-
 .hidden {
     display: none !important;
 }
@@ -113,6 +104,15 @@ button {
     cursor: pointer;
     margin: 0;
     padding: 0;
+
+    &.hide {
+        opacity: 0 !important;
+        max-height: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
 }
 
 .clearfix {
@@ -256,4 +256,10 @@ textarea {
         opacity: 0;
         transition: opacity 0.2s ease;
     }
+}
+
+*:disabled {
+    cursor: not-allowed !important;
+    opacity: 0.7 !important;
+    transform: none !important;
 }

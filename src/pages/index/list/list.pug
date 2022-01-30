@@ -1,27 +1,8 @@
 section.container
-    ul.list
-        li.list__item
-            h3.list__caption
-                | Доброе утро, друг, хорошего дня!
-                button.list__delete(type="button")
-                    img(src="img/ic_delete.svg" alt="" title="")
-
-            p.list__datetime
-                img(src="img/ic_calendar.svg" alt="" title="")
-                | 26.01.2022 в 12:34
-
-        li.list__item.list__item_selected
-            h3.list__caption
-                | Встретиться с друзьями и отметить Серёгин ДР (не забыть поадрок)
-                button.list__delete(type="button")
-                    img(src="img/ic_delete.svg" alt="" title="")
-
-            p.list__datetime
-                img(src="img/ic_calendar.svg" alt="" title="")
-                | 26.01.2022 в 12:34
+    ul.list#noteList
 
     .buttons-list.buttons-list_note-list
         p.button-wrapper
-            button.btn.btn_lite(type="button") Получить список
+            button.btn.btn_lite#getNoteList(type="button") Получить список
         p.button-wrapper
-            button.btn.btn_dark(type="button") Очистить список
+            button.btn.btn_dark#cleanNotesBtn(type="button" disabled) Очистить список

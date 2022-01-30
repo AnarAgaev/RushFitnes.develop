@@ -1,231 +1,347 @@
-// // Блокируем зум экрана на IOS
-// document.addEventListener(
-//     'touchmove',
-//     function(event) {
-//         event = event.originalEvent || event;
-//
-//         if (event.scale !== 1) {
-//             event.preventDefault();
-//         }
-//     },
-//     false
-// );
-//
-// window.IS_DEBUGGING = true;
-//
-// /* В суперглобальной переменной STORE храним
-//  * все дынные, введенные пользователем
-//  * С помощью проксирования, слушаем
-//  * изменение структуры данных
-//  */
-// window.STORE = {
-//     stepsMap: [
-//         // При инициализации, сохраняем в STORE первый шаг
-//         '#forWhom',
-//     ]
-// };
-//
-// STORE = new Proxy(STORE, {
-//     set: function (target, prop, val) {
-//
-//         const removeAnswerFromStore = ([question, answer]) => {
-//             let prop = getPropFromController(question, answer),
-//                 arrAnswers = target[prop][1],
-//                 idxOfAnswer = arrAnswers.indexOf(answer);
-//
-//             arrAnswers.splice(idxOfAnswer, 1);
-//         };
-//
-//         const addAnswerToStore = ([question, answer]) => {
-//             let prop = getPropFromController(question, answer);
-//
-//             target[prop]
-//                 ? target[prop][1].push(answer)
-//                 : target[prop] = [question, [answer]];
-//         };
-//
-//         if (isPluralController(val)) {
-//             /* Для контроллеров типа checkbox при снятии
-//              * галочки, нужно удалить свойство из STORE.
-//              * Поверяем ,если в STORE уже есть целевой
-//              * ответ, удаляем его, иначе добавляем
-//              */
-//             isAnswerInStore(val)
-//                 ? removeAnswerFromStore(val)
-//                 : addAnswerToStore(val);
-//         } else {
-//             target[prop] = val;
-//         }
-//
-//         /*
-//          * Если в СТОРЕ меняется телефон, то сразу меняем
-//          * телефон во всех полях ввода телефона.
-//          */
-//         if (prop === 'phone') {
-//             updatePhones(val);
-//         }
-//
-//         // /*
-//         //  * Если в СТОРЕ меняется email, то сразу меняем
-//         //  * email во всех полях ввода email адреса.
-//         //  */
-//         // if (prop === 'email') {
-//         //     updateEmails(val);
-//         // }
-//
-//         if (IS_DEBUGGING) {
-//             setTimeout(() => console.log(target), 100);
-//         }
-//
-//         return true;
-//     },
-//
-//     deleteProperty: function(target, prop) {
-//         delete target[prop];
-//
-//         if (IS_DEBUGGING) {
-//             setTimeout(() => console.log(target), 100);
-//         }
-//
-//         return true;
-//     }
-// });
-//
-// const isPluralController = ([question, answer]) => {
-//     return $(`[data-question="${question}"][data-answer="${answer}"]`)
-//         .attr('type') === 'checkbox';
-// };
-//
-// const isAnswerInStore = ([question, answer]) => {
-//     let prop = getPropFromController(question, answer);
-//
-//     if (STORE[prop]) {
-//         return STORE[prop][1].includes(answer);
-//     }
-// };
-//
-// const getPropFromController = (question, answer) => {
-//     return $(`[data-question="${question}"][data-answer="${answer}"]`)
-//         .attr('name');
-// };
-//
-// $(document).ready(() => {
-//
-//     /* Слушаем изменение каждого input
-//      * В случае всплытия события,
-//      * пушим данные в STORE
-//      */
-//     $('input.controller').on('input', e => {
-//         let _this = e.target,
-//             prop = $(_this).attr('name'),
-//             question = $(_this).data('question'),
-//             answer = $(_this).data('answer');
-//
-//         STORE[prop] = [question, answer];
-//
-//         resetAllCheckboxControllers(_this);
-//     });
-//
-//     const resetAllCheckboxControllers = (el) => {
-//         if ($(el).attr('type') === 'radio') {
-//             $('input:checkbox').prop('checked', false);
-//         }
-//     };
-//
-//     // Скролл к первому вопросу
-//     window.scrollToQuestionsStart = () => {
-//         let top = $('#progress').offset().top;
-//
-//         $('body,html').animate(
-//             { scrollTop: top },
-//             1000
-//         );
-//     };
-//
-//     $('.go-to-quiz').on('click', scrollToQuestionsStart);
-//
-//     const lazyLoadVideo = (idContainer) => {
-//         let video = $(idContainer).find('video'),
-//             source = video.find('source'),
-//             src = video.data('src');
-//
-//         video.attr('src', src);
-//         source.attr('src', src);
-//     }
-//     // Ленивая загрузка видео
-//     setTimeout(
-//         () => {
-//             lazyLoadVideo('#presentationModal');
-//             lazyLoadVideo('#getContactVideo');
-//         },
-//         3000
-//     );
-//
-//     // Блокируем отправку всех форм.
-//     // Данные всегда отправляются асинхронно.
-//     $('form').submit(function (e) {
-//         e.preventDefault();
-//
-//         const form = e.target,
-//             submit = $(this).find('[type="submit"]'),
-//             formType = $(this).find('[name="form"]').val();
-//
-//         if (!submit.attr('disabled'))  {
-//
-//             const request = $.ajax({
-//                 method: 'post',
-//                 url: 'https://quiz24.ru/portfolio/raiton/forms-handler.php',
-//                 data: $(form).serialize(),
-//                 dataType: 'json'
-//             });
-//
-//             request.done(response => {
-//                 if (IS_DEBUGGING) console.log(response);
-//
-//                 if (response.error) {
-//                     if (formType === 'consultation') {
-//
-//                         const dialogs = $(form)
-//                             .closest('.modal')
-//                             .find('.modal__dialog');
-//
-//                         $(dialogs[0]).addClass('modal__dialog_hide');
-//
-//                         setTimeout(() => {
-//                             $(dialogs[0]).addClass('hidden');
-//                             $(dialogs[1]).removeClass('hidden');
-//                         }, 300);
-//
-//                         setTimeout(() => {
-//                             $(dialogs[1]).removeClass('modal__dialog_hide');
-//                         }, 400);
-//
-//                     } else if (formType === 'results-consultation') {
-//                         showModal($(form).find('[type="submit"]')[0]);
-//                     }
-//
-//                 } else {
-//                     console.log('Ошибка отправки сообщения в обработчике формы!')
-//                 }
-//             });
-//
-//             request.fail(function( jqXHR, textStatus ) {
-//                 console.log("Request failed: " + jqXHR + " --- " + textStatus);
-//             });
-//         }
-//     });
-// });
-//
-// // Get word form for days
-// window.getCountWordForm = (count) => {
-//     const cases = [2, 0, 1, 1, 1, 2];
-//     const forms = ['матрас', 'матраса', 'матрасов'];
-//
-//     return forms[(count % 100 > 4 && count % 100 < 20)
-//         ? 2
-//         : cases[(count % 10 < 5)
-//             ? count % 10
-//             : 5
-//             ]
-//         ];
-// };
+let timerIntervalId;
+
+const normalizeDatetime = (data) => {
+    const year = data.getFullYear(),
+        day = data.getDate(),
+        hour = data.getHours(),
+
+        minutes = data.getMinutes() < 9
+            ? `0${data.getMinutes()}`
+            : data.getMinutes(),
+
+        month = data.getMonth() < 10
+            ? `0${data.getMonth() + 1}`
+            : data.getMonth() + 1;
+
+    return `${day}.${month}.${year} ${hour}:${minutes}`;
+};
+
+const timer = () => {
+    const datetime = document
+        .getElementById('currentNoteDatetime');
+
+    datetime.innerText = normalizeDatetime(new Date());
+};
+
+const initTimer = () => {
+    timer();
+    timerIntervalId = setInterval(timer, 1000);
+};
+
+const clearTimer = () => {
+    clearInterval(timerIntervalId);
+};
+
+const htmlNodeConstructor = (note) => {
+    const htmlNode = document.createElement('li');
+
+    htmlNode.classList.add('list__item', 'hide');
+
+    htmlNode.dataset.id = note.id;
+    htmlNode.dataset.description = note.description;
+    htmlNode.dataset.datetime = note.datetime;
+
+    htmlNode.innerHTML = `<h3 class="list__caption"><span class="list__title">${note.caption}</span>
+            <button class="list__delete" type="button" data-id="${note.id}">
+                <img src="img/ic_delete.svg" alt="" title="">
+            </button>
+        </h3>
+        <p class="list__datetime">
+            <img src="img/ic_calendar.svg" alt="" title="">
+            ${note.datetime}
+        </p>`;
+
+    const delBtn = htmlNode.querySelector('.list__delete');
+
+    delBtn.addEventListener('click', () => deleteNote(delBtn));
+    htmlNode.addEventListener('click', () => selectNote(htmlNode));
+
+    return htmlNode;
+};
+
+const addNoteToList = (note) => {
+    const list = document.getElementById('noteList');
+    const htmlNode = htmlNodeConstructor(note);
+
+    list.prepend(htmlNode);
+
+    cleanCurrentNote();
+    hideCloseBtn();
+    toggleBtn(document.getElementById('saveNoteBtn'), true);
+    clearTimer();
+    initTimer();
+
+    setTimeout(
+        () => htmlNode.classList.remove('hide'),
+        100
+    );
+};
+
+const saveNote = async () => {
+
+    const form = document.getElementById('form');
+    const formData = new FormData(form)
+
+    const response = await fetch('https://quiz24.ru/portfolio/icon-scin/hendlers.php', {
+        method: 'POST',
+        body: formData
+    });
+
+    if (response.ok) {
+        const result = await response.json();
+        const id = formData.get('id')
+
+        if (id) {
+            const item = document.querySelector(`[data-id="${id}"]`);
+            const caption = item.querySelector(`.list__title`);
+
+            caption.innerText = result.note.caption;
+            item.dataset.dataDescription = result.note.description;
+
+        } else {
+            addNoteToList(result.note);
+            toggleBtn(document.getElementById('cleanNotesBtn'), false);
+            console.log('Дабавили заметку:', result);
+        }
+    } else {
+        alert("Ошибка HTTP запроса: " + response.status);
+    }
+};
+
+const cleanCurrentNote = () => {
+    document.getElementById('description').value = '';
+};
+
+const hideCloseBtn = () => {
+    document
+        .getElementById('clearNoteBtn')
+        .classList
+        .add('hide');
+};
+
+const showCloseBtn = () => {
+    document
+        .getElementById('clearNoteBtn')
+        .classList
+        .remove('hide');
+};
+
+const removeNote = (note, timeout= 1000) => {
+    setTimeout(
+        () => {
+            note.parentNode.removeChild(note);
+        },
+        timeout
+    );
+};
+
+const hideNote = (note, timeout) => {
+    setTimeout(
+        () => {
+            note.classList.add('hide');
+            removeNote(note);
+        },
+        timeout
+    );
+};
+
+const toggleBtn = (btn, direction) => {
+    btn.disabled = direction;
+};
+
+const removeNoteList = () => {
+    const notes = document.getElementsByClassName('list__item'),
+        arrNotes = Array.from(notes);
+
+    toggleBtn(document.getElementById('cleanNotesBtn'), true);
+    toggleBtn(document.getElementById('getNoteList'), false);
+    toggleBtn(document.getElementById('deleteBtn'), true);
+
+    document.getElementById('deleteBtn').dataset.id = '';
+
+    removeCurrentNote();
+
+    arrNotes.forEach(note => {
+        note.classList.add('hide');
+        removeNote(note, 300);
+    });
+};
+
+const checkDescription = () => {
+    const val = document
+        .getElementById('description')
+        .value;
+
+    const btnSave = document
+        .getElementById('saveNoteBtn');
+
+    const btnClear = document
+        .getElementById('clearNoteBtn');
+
+    btnSave.disabled = val === '';
+
+    val === ''
+        ? btnClear.classList.add('hide')
+        : btnClear.classList.remove('hide');
+};
+
+const removeCurrentNote = () => {
+    cleanCurrentNote();
+    hideCloseBtn();
+    clearTimer();
+    initTimer();
+    unselectNote();
+    toggleBtn(document.getElementById('saveNoteBtn'), true);
+    toggleBtn(document.getElementById('deleteBtn'), true);
+
+    document.getElementById('currentNoteId').value = '';
+};
+
+const buildNoteList = (arrItems) => {
+    const list = document.getElementById('noteList');
+
+    arrItems.forEach((note, idx) => {
+        const htmlNode = htmlNodeConstructor(note);
+
+        list.append(htmlNode);
+
+        setTimeout(
+            () => htmlNode.classList.remove('hide'),
+            idx * 100
+        );
+    });
+};
+
+const getNoteList = async () => {
+
+    const formData = new FormData();
+
+    toggleBtn(document.getElementById('getNoteList'), true);
+    toggleBtn(document.getElementById('cleanNotesBtn'), false);
+
+    formData.append('action', 'get');
+
+    const response = await fetch('https://quiz24.ru/portfolio/icon-scin//hendlers.php', {
+        method: 'POST',
+        body: formData
+    });
+
+    if (response.ok) {
+        const result = await response.json();
+        buildNoteList(result.notes);
+        toggleBtn(document.getElementById('cleanNotesBtn'), false);
+        console.log('Запросили списсок заматое:', result);
+    } else {
+        alert("Ошибка HTTP запроса: " + response.status);
+    }
+};
+
+const selectNote = note => {
+    const currentSelectedNote = document.querySelector('.list__item_selected');
+    const deleteBtn = document.getElementById('deleteBtn');
+    const desc = document.getElementById('description');
+    const datetime = document.getElementById('currentNoteDatetime');
+    const currentNoteId = document.getElementById('currentNoteId');
+
+    toggleBtn(deleteBtn, false);
+    deleteBtn.dataset.id = note.dataset.id;
+
+    desc.value = note.dataset.description;
+    datetime.innerText = note.dataset.datetime;
+
+    clearTimer();
+    showCloseBtn();
+
+    toggleBtn(document.getElementById('saveNoteBtn'), false);
+
+    currentNoteId.value = note.dataset.id;
+
+    if (currentSelectedNote) {
+        currentSelectedNote.classList.remove('list__item_selected');
+    }
+
+    note.classList.add('list__item_selected')
+};
+
+const unselectNote = () => {
+    const selectedNote =  document
+        .querySelector('.list__item_selected');
+
+    if (selectedNote) {
+        selectedNote
+            .classList
+            .remove('list__item_selected');
+    }
+};
+
+const deleteNote = async (htmlNode) => {
+    const deleteNoteId = htmlNode.dataset.id;
+    const formData = new FormData();
+
+    formData.append('action', 'delete');
+    formData.append('id', deleteNoteId);
+
+    const response = await fetch('https://quiz24.ru/portfolio/icon-scin/hendlers.php', {
+        method: 'POST',
+        body: formData
+    });
+
+    if (response.ok) {
+        const result = await response.json();
+        const node = document.querySelector(`.list__item[data-id="${result.note}"]`)
+
+        removeCurrentNote();
+        hideNote(node, 0);
+        node.classList.add('collapsed');
+
+        console.log('Удалили заметку с ИД:', deleteNoteId);
+    } else {
+        alert("Ошибка HTTP запроса: " + response.status);
+    }
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    // Иницифлизируем таймер текущего
+    // времени при первой загрузке
+    // страницы
+    initTimer();
+
+    // Прверяем текс заметки на вилаидность
+    document
+        .getElementById('description')
+        .addEventListener('input', checkDescription);
+
+    // Сохраняем заметку в БД
+    document
+        .getElementById('saveNoteBtn')
+        .addEventListener('click', () => {
+            const isText = document
+                .querySelector('#form textarea')
+                .value !== '';
+
+            if (isText) saveNote();
+        });
+
+    // Очищаем списов заметок
+    document
+        .getElementById('cleanNotesBtn')
+        .addEventListener('click', removeNoteList);
+
+    // Загружаем список элементов
+    document
+        .getElementById('getNoteList')
+        .addEventListener('click', getNoteList);
+
+    // Закрываем заметку, если передумали
+    document
+        .getElementById('clearNoteBtn')
+        .addEventListener('click', removeCurrentNote);
+
+    // Удаляем заметку
+    document
+        .getElementById('deleteBtn')
+        .addEventListener(
+            'click',
+                e => deleteNote(e.target));
+});

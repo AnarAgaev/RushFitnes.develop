@@ -1,18 +1,19 @@
 section.container
     .item__content
-        form.item__form(action="" method="GET")
-            textarea.item__description(placeholder="Текст заметки")
+        form#form.item__form(action="" method="GET")
+            input#currentNoteId(type="hidden" value='' name="id")
+            input(type="hidden" value="save" name="action")
+            textarea.item__description#description(placeholder="Текст заметки" name="description")
 
         .item__footer
             p.item__datetime
                 img(src="img/ic_calendar.svg" alt="" title="")
-                | 26.01.2022 в 12:34
-            button.btn.btn_lite(
-                type="button"
+                span#currentNoteDatetime
+            button.btn.btn_lite.hide#clearNoteBtn(type="button"
                 data-current-item-id="") Закрыть
 
     .buttons-list
         p.button-wrapper
-            button.btn.btn_lite(type="button") Сохранить заметку
+            button.btn.btn_lite#saveNoteBtn(type="button" disabled) Сохранить заметку
         p.button-wrapper
-            button.btn.btn_dark(type="button") Удалить заметку
+            button.btn.btn_dark#deleteBtn(type="button" disabled) Удалить заметку

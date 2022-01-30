@@ -1,78 +1,132 @@
-<?php session_start();
-function normalizePhone($str) {
-    $arr = str_split($str);
+<?php
 
-    return '+'
-        . $arr[0]
-        . ' ('
-        . $arr[1] . $arr[2] . $arr[3]
-        . ') '
-        . $arr[4] . $arr[5] . $arr[6]
-        . '-'
-        . $arr[7] . $arr[8]
-        . '-'
-        . $arr[9] . $arr[10];
-}
+    function dbConnectOpen() {
+        $host = 'localhost';
+        $user = 'g99322e8_notes';
+        $password = '8XgU&xNB';
+        $db = 'g99322e8_notes';
 
-if (isset($_POST['form'])) {
+        $link = mysqli_connect($host, $user, $password, $db);
+        mysqli_set_charset($link, "utf8"); // for UTF-8 encoding
+        mysqli_query($link, "SET timezone = 'GMT'"); // set the time zone for MySQL
+        date_default_timezone_set("Europe/Amsterdam"); // choose geographic area for PHP
 
-    $message = '
-    <html>
-    <head>
-      <title>Сообщение пользователя с сайта Квиз лендинга.</title>
-    </head>
-    <body>
-      <h2>Сообщение пользователя с сайта Квиз лендинга.</h2>
-      <table cellspacing="0" cellpadding="0" style="background-color: #f3f3f3; padding: 15px 15px 20px 15px">';
+        // if (!$link) {
+        // echo 'Error: Unable to establish connection with MySQL.' . PHP_EOL;
+        // echo 'Error code errno: ' . mysqli_connect_errno() . PHP_EOL;
+        // echo 'Error text error: ' . mysqli_connect_error() . PHP_EOL;
+        // exit;
+        // }
+        // echo 'Connection to MySQL is established!' . PHP_EOL;
+        // echo 'Server Information: ' . mysqli_get_host_info($link) . PHP_EOL;
 
-    switch ($_POST['form']) {
-        case 'callback':
-            $message .= '<thead><tr><td colspan="2" style="font-weight: bold; padding-bottom: 10px; font-size: 1.2em;">Пользователь заполнил форму быстрая консультация.</td></tr></thead>';
-            $message .= '<tbody>';
-            $message .= '<tr><td colspan="2" style="padding-bottom: 10px">Данные внесенные пользователем:</td></tr>';
-            $message .= '<tr style="background: white;"><td style="padding: 7px 10px 0px;">Пользователь указал телефон:</td><td>' . $_POST['phone'] . '</td></tr>';
-            $message .= '<tr style="background: white;"><td style="padding: 0 10px 7px;">Удобное вермя для контакта:</td><td>' . $_POST['time'] . '</td></tr>';
-            $message .= '</tbody>';
-            break;
-
-        case 'subscribe':
-            $message .= '<thead><tr><td colspan="2" style="font-weight: bold; padding-bottom: 10px; font-size: 1.2em;">Пользователь указал адрес электронной почты.</td></tr></thead>';
-            $message .= '<tbody>';
-            $message .= '<tr><td colspan="2" style="padding-bottom: 10px">Данные внесенные пользователем:</td></tr>';
-            $message .= '<tr style="background: white;"><td style="padding: 7px 10px;">Адрес электронной почты:</td><td>' . $_POST['email'] . '</td></tr>';
-            $message .= '</tbody>';
-            break;
+        return $link;
     }
 
-    $message .= '
-      </table>
-      <br>
-      <p>
-        <strong>Не отвечайте на это сообщение через онлайн почту или в вашем почтовом клиенте.</strong>
-        <br>
-        Cообщение сгенерировано автоматически.
-        <br>
-        Для контакта с посетителем сайта, используйте данные указанные выше.
-      </p>
-    </body>
-    </html>';
+    function dbConnectClose($link) {
+        mysqli_close($link);
+    }
 
-    // $to      = 'quiz24-job@yandex.ru';
-    $to      = 'anar.n.agaev@gmail.com';
-    $subject = 'Сообщение пользователя сайта Квиз лендинга.';
+    function normalizeDatetime($timestamp) {
+        $datetime = strtotime($timestamp);
+        return date('d.m.Y H:i', $datetime);
+    }
 
-    $headers[] = 'MIME-Version: 1.0';
-    $headers[] = 'Content-type: text/html; charset=iso-8859-1';
-    $headers[] = 'To: Managers <' . $to . '>,';
-    $headers[] = 'From: Quiz24.ru <example@quiz24.ru>';
-    $headers[] = 'Cc: aagaev@inbox.ru';
+    function noteSave($link, $id, $description) {     
 
-    //$arResponse['error'] = mail($to, $subject, $message, implode("\r\n", $headers));
-    $arResponse['error'] = true;
+        if ($id === '') {
+            $query = 'INSERT INTO `notes`(`id`, `description`, `datatime`) VALUES (null, "' . $description . '", now())';
+            mysqli_query($link, $query);
+
+            $noteId = mysqli_insert_id($link);
+        } else {
+            $query = 'UPDATE `notes` SET `description`="'.$description.'",`datatime`= now() WHERE `id` = "'.$id.'"';
+            mysqli_query($link, $query);
+
+            $noteId = $id;
+        }
+
+        // Получаем данные, текущей заметки
+        $query = 'SELECT `id`, `description`, `datatime` FROM `notes` WHERE `id` = ' . $noteId . '';
+        $res = mysqli_fetch_array(mysqli_query($link, $query));
+
+        $caption = iconv_strlen($res['description']) > 80
+            ? mb_substr($res['description'], 0, 80, 'UTF-8') . '...'
+            : $res['description'];
+
+        return [
+            'id' => $res['id'], 
+            'description' => $res['description'], 
+            'caption' => $caption,
+            'datetime' => normalizeDatetime($res['datatime'])
+        ];
+    }
+
+    function noteList($link) {
+
+        $query = 'SELECT `id`, `description`, `datatime` FROM `notes` WHERE 1 ORDER BY `id` DESC';
+        $result = mysqli_query($link, $query);
+
+        $notes = [];
+
+
+        while ($row = mysqli_fetch_assoc($result)) {
+
+            $caption = iconv_strlen($row['description']) > 80
+                ? mb_substr($row['description'], 0, 80, 'UTF-8') . '...'
+                : $row['description'];
+
+            array_push($notes, [
+                'id' => $row['id'], 
+                'description' => $row['description'], 
+                'caption' => $caption,
+                'datetime' => normalizeDatetime($row['datatime'])
+            ]);
+        }
+
+        return $notes;
+
+    }
+
+    function noteDelete($link, $id) {
+
+        $query = 'DELETE FROM `notes` WHERE `id` = "' . $id . '"';
+        $result = mysqli_query($link, $query);
+
+        return $id;
+    }
+
+    // Открываем соединение с БД
+    $link = dbConnectOpen(); 
+
+    // Добавляем/обновляем заметку в БД
+    if (isset($_POST['action']) && $_POST['action'] === 'save') {
+
+        $id = htmlspecialchars(strip_tags(trim($_POST['id'])));
+        $description = htmlspecialchars(strip_tags(trim($_POST['description'])));
+
+        $arResponse['note'] = noteSave($link, $id, $description);
+    }
+
+    // Получаем список всех заметок
+    if (isset($_POST['action']) && $_POST['action'] === 'get') {
+        $arResponse['notes'] = noteList($link);
+    }
+
+    // Удаляем заметку из БД
+    if (isset($_POST['action']) && $_POST['action'] === 'delete') {
+        $id = htmlspecialchars(strip_tags(trim($_POST['id'])));
+
+        $arResponse['note'] = noteDelete($link, $id);
+    }
+
+    // Закываем соединение с БД
+    dbConnectClose($link);
+
+    // Отправляем на клиента данные обработчика
     $arResponse['post'] = $_POST;
 
     $JSON__DATA = defined('JSON_UNESCAPED_UNICODE')
         ? json_encode($arResponse, JSON_UNESCAPED_UNICODE)
         : json_encode($arResponse);
     echo $JSON__DATA;
-}
